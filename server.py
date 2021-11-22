@@ -1,11 +1,12 @@
 # SERVER SIDE SCRIPT TO HANDLE MULTIPLE CLIENTS.
 
 import asyncio
-import socket 
+import socket
+import struct
 
 async def handle_client(address, loop):
     # Initial socket setup
-    sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)                                                                             
+    sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)                                                                       
     sock.bind(address) 
     sock.listen()           
     print('Server listening')
@@ -17,6 +18,7 @@ async def handle_client(address, loop):
             print('Connection from',addr)
             
             loop.create_task(handle_client_data(client,loop,addr))
+            
         except socket.error as err:
              print('ERROR:  %s'%(err))
 
@@ -26,13 +28,14 @@ async def handle_client_data(client, loop, addr):
             
             msg = await loop.sock_recv(client,4096)      # Receiving data from clients
             
-            data = msg
-
+            data = struct.unpack('<2f',msg)
+            
             if not data:				                 # If no data message is recieved
                 break
             else: 
                 print('Data recevied from ', addr) 
-                print(data) 
+                print("x",data[0])
+                print("y",data[1])
 
         except socket.error as err:
              print('ERROR:  %s'%(err))                   # Includes accidental disconnect of client 
@@ -44,7 +47,7 @@ async def handle_client_data(client, loop, addr):
 
 if __name__ == '__main__':
     loop=asyncio.get_event_loop()
-    loop.run_until_complete(handle_client(('',33000),loop))
+    loop.run_until_complete(handle_client(('127.0.1',33000),loop))
     loop.close()
 
 
