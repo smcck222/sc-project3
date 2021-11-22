@@ -19,6 +19,7 @@ python3 server.py
 RPi 22: 
 
 chmod +x exec.sh
+
 ./exec.sh
 
 
