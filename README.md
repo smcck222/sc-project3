@@ -14,13 +14,13 @@ Run the following (in this order):
 
 RPi 21 : 
 
-python3 server.py 
+`python3 server.py`
 
 RPi 22: 
 
-chmod +x exec.sh
+`chmod +x exec.sh`
 
-./exec.sh
+`./exec.sh`
 
 
 
