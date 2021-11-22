@@ -3,7 +3,9 @@
 Communicating between the RPis with socket programming and asynchronous sockets (TCP).
 
 RPi 21 - rasp-021.berry.scss.tcd.ie 10.35.70.21 - server
+
 RPi 22 - rasp-022.berry.scss.tcd.ie 10.35.70.22 - client1 + client 2 
+
 exec.sh - bash script that runs both the client python scripts. 
 
 Clone the repo in both RPis. 
