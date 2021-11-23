@@ -8,25 +8,23 @@ import datetime
 import time
 import struct
 
-distance = 228 
-Period_of_revolution = 16487 #687 * 24 hours.
-angle_speed = 0.021835 * math.pi / 180  # 360 degree / period_of_revolution, then transimit it to arc
+accelerate_rate = 10
+dist_mars_to_sun = 227940000 #kilometers
+dist_satellite_mars = 3400 #kilometers
+satellite_angle_speed = 0.002555 #kilometer/second
+mars_angle_speed = 0.000000105860934  #kilometer/second angle_
 initial_time = time.time()
 
+
 def get_Location():
-    time_passed = time.time() - initial_time
-    location_x = distance * math.sin(angle_speed * time_passed)
-    location_y = distance * math.cos(angle_speed * time_passed)
-    coordinate = [location_x,location_y]
-    coordinate = struct.pack('<2f',*coordinate)
+    time_passed = (time.time() - initial_time)*accelerate_rate
+    mars_location_x = dist_mars_to_sun * math.sin(mars_angle_speed * time_passed)
+    mars_location_y = dist_mars_to_sun * math.cos(mars_angle_speed * time_passed)
+    satellite_location_x = dist_satellite_mars * math.sin(satellite_angle_speed * time_passed) + mars_location_x
+    satellite_location_y = dist_satellite_mars * math.cos(satellite_angle_speed * time_passed) + mars_location_y
+    coordinate = [satellite_location_x,satellite_location_y,mars_location_x,mars_location_y]
+    coordinate = struct.pack('<4f',*coordinate)
     return coordinate
-
-def time_now():# To insert timestamp into data.
-
-    now = datetime.datetime.now()	
-    return (now.strftime("%Y%m%d%H%M%S"))
-
-msg = "Hello World from Sensor 1" + " tstmp"
 
 try:
 	s=socket.socket(socket.AF_INET,socket.SOCK_STREAM) 	# Socket creation. 
