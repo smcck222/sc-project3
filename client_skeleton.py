@@ -19,8 +19,10 @@ try:
 except socket.error as err: 
 	print('Socket creation failed with %s '%(err))
 
-server_port = 33000
-server_ip = '10.35.70.21'   					 # Server ip and portno. 
+#server_port = 33000
+#server_ip = '10.35.70.21'   							# Server ip and portno (rpi). 
+server_ip = '127.0.0.1' 								# Server ip, localhost.
+server_port = 8888										# Server portno, localhost. 
 
 s.connect((server_ip,server_port))  					# Connecting to server
 

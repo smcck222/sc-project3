@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-python3 client1.py &
-python3 client2.py &
+python3 rover1.py &
+python3 rover2.py &
