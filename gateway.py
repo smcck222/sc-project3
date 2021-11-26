@@ -18,7 +18,7 @@ async def start_server(loop):
     ip = socket.gethostbyname(hostname)
     print('HOST IP: ',ip)
     port = 9999
-    socket_address = ('127.0.0.1',9999)
+    socket_address = ('10.35.70.21',34000)
     server_socket.bind(socket_address)
     server_socket.listen()
     server_socket.setblocking(False)

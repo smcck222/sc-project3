@@ -12,7 +12,7 @@ clients_info_lock = threading.Lock()
 client_info = []              # List of slave rovers.
 rover_info = {}                 # ip: [x,y]
 WAIT_TIME_SECONDS = 10
-gateway_address = ('127.0.0.1',9999)
+gateway_address = ('10.35.70.21',34000)
 gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 # Updates client_info list.
 def update_client_info(client):
@@ -27,7 +27,7 @@ def update_client_info(client):
 def update_rover_info(addr,data):
     global rover_info
     
-    rover_info[data['rover']] = [data['location_x'], data['location_y'], addr[1]]  # rover_no:[x,y, portno]
+    rover_info[data['rover'] + '10.35.70.21'] = [data['location_x'], data['location_y'], addr[1]]  # rover_no:[x,y, portno]
     # Adds new + replaces old. 
 
 # Generates sleep task - for overheated rover.
@@ -165,7 +165,8 @@ if __name__ == '__main__':
     connectToGateway(gateway_address)
     loop.create_task(send_mesg_at_timeout(WAIT_TIME_SECONDS, start_stream))
     loop.create_task(receiveGatewayData(loop))
-    loop.run_until_complete(handle_client(('127.0.0.1',8888),loop)) 
+    #loop.run_until_complete(handle_client(('127.0.0.1',8888),loop))
+    loop.run_until_complete(handle_client(('10.35.70.21',33000),loop)) 
     # ip and port no. RPI: 10.35.70.21, 10.35.70.22 , 33000
     loop.close()
 
