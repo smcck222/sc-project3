@@ -5,17 +5,23 @@ import socket
 import json
 import random
 import math
+import threading
 
 
-client_info = []                # List of slave rovers.
+clients_info_lock = threading.Lock()
+client_info = []              # List of slave rovers.
 rover_info = {}                 # ip: [x,y]
-
+WAIT_TIME_SECONDS = 10
+gateway_address = ('127.0.0.1',9999)
+gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 # Updates client_info list.
 def update_client_info(client):
+    global clients_info_lock
     global client_info
-               
     if client not in client_info: 
-        client_info.append(client)
+        with clients_info_lock:
+            client_info.append(client)
+               
 
 # Updates rover_info dict, with ip, location_x, location_y.
 def update_rover_info(addr,data):
@@ -65,7 +71,7 @@ async def handle_client(address, loop):
         try:
             client,addr = await loop.sock_accept(sock)   # Accepting connections from clients
             print('Connection from',addr)
-            
+            update_client_info(client)
             loop.create_task(handle_client_data(client,loop,addr))
             
         except socket.error as err:
@@ -109,11 +115,57 @@ async def handle_client_data(client, loop, addr):
         
     print('Connection closed',addr)                      # Includes no data recieved, parse error and keyboard interrupt as well
     client.close() 
-    
+
+async def send_mesg_at_timeout(timeout, func):
+    while True:
+        await asyncio.sleep(timeout)
+        await func()
+
+async def start_stream():
+    global gateway_socket
+    global rover_info
+    try:
+        if bool(rover_info):
+            gateway_socket.sendall(json.dumps(rover_info).encode('utf-8'))  
+    except Exception as e:
+        print(e)
+        pass
+
+def connectToGateway(address):
+    global gateway_socket
+    socket_address = address
+    gateway_socket.connect(socket_address)
+
+# This function is used for receiving the data from gateway and send it to all other rovers.
+async def receiveGatewayData(loop):
+    global client_info
+    global gateway_socket
+    while True:
+        try:
+            msg = await loop.sock_recv(gateway_socket,4096)
+            print('Data Received from Gateway')
+            data = msg.decode('utf-8')
+            data = json.loads(data)
+            print(data)
+            if not msg:
+                break
+            else:
+                if client_info:
+                    for client in client_info:
+                        client.sendall(msg)
+                else:
+                    break
+        except Exception as e:
+            print(e)
+            pass
+
 
 if __name__ == '__main__':
     loop=asyncio.get_event_loop()
-    loop.run_until_complete(handle_client(('127.0.0.1',8888),loop))     
+    connectToGateway(gateway_address)
+    loop.create_task(send_mesg_at_timeout(WAIT_TIME_SECONDS, start_stream))
+    loop.create_task(receiveGatewayData(loop))
+    loop.run_until_complete(handle_client(('127.0.0.1',8888),loop)) 
     # ip and port no. RPI: 10.35.70.21, 10.35.70.22 , 33000
     loop.close()
 
