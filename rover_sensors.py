@@ -14,8 +14,6 @@ class rover_sensors:
         #rover temparature in deg celcius
         self.temp = random.randint(15,40)
 
-
-
     def do_rover_task(self,task,location_x,location_y,temperature,status):
         # global rover_speed, location_x, location_y, temperature, overheating_rate, status
 
@@ -28,9 +26,6 @@ class rover_sensors:
             dist_y = target_y - location_y
             total_dist = math.sqrt(math.pow(dist_x, 2) + math.pow(dist_y, 2))
             task_require_time = total_dist / self.rover_speed
-            # msg = "ROVER1: Heading to Location (" + str(target_x) + ", " + str(target_y) + "), ETA: " + str(
-            #     task_require_time) + " seconds"
-            # print(msg)
 
             # Increasing temp of rover as it moves, include after sensor data if that counts in task_require_time.
             temperature = temperature + self.overheating_rate * task_require_time
@@ -38,8 +33,6 @@ class rover_sensors:
                 temperature = 91
                 status = 0
 
-            # Simulating the rover moving.
-            # sleep(task_require_time)
         return target_x,target_y,temperature,status,task_require_time
 
     def air_temp_sensor(self):
