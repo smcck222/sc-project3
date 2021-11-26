@@ -22,7 +22,8 @@ location_y = random.uniform(0, 500)
 initial_time = time.time()
 server_port = 8888  # localhost
 server_ip = '127.0.0.1'  # localhost
-
+flag = True
+task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # server_ip = '10.35.70.21'     # rpi
 # server_port = 33000           # rpi
@@ -56,7 +57,9 @@ def do_task(task):
 
 def start():
     task = init()
-    global status, temperature
+    global status, temperature, flag
+    flag = False
+
     while True:
         if status == 1:  # healthy rover, and is not the leader.
             if task == None:
@@ -75,7 +78,7 @@ def start():
 
 
 def init():
-    global s
+    global s,task_socket
     # global location_x, location_y, temperature
     s = rover_sensors.rover_sensors()
     health_report = {'rover': 2,
@@ -84,9 +87,11 @@ def init():
                      'location_x': location_x,
                      'location_y': location_y}
     try:
-        task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Socket creation.
-        print('Socket Creation successful')
-        task_socket.connect((server_ip, server_port))  # Connecting to server/ leader rover.
+        if flag:
+            task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Socket creation.
+            #print(type(task_socket))
+            print('Socket Creation successful')
+            task_socket.connect((server_ip, server_port))  # Connecting to server/ leader rover.
 
         task_socket.send(json.dumps(health_report).encode('utf-8'))
         print("ROVER 2: successfully sent health data")
@@ -96,7 +101,7 @@ def init():
         task = json.loads(task)
         print(task)
         print("ROVER 2: successfully recieved task")
-        task_socket.close()
+        # task_socket.close()
         return task
 
     except socket.error as err:
