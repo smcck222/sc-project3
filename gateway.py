@@ -18,7 +18,7 @@ async def start_server(loop):
     ip = socket.gethostbyname(hostname)
     print('HOST IP: ',ip)
     port = 9999
-    socket_address = ('10.35.70.21',34000)
+    socket_address = ('10.35.70.21',33333)
     server_socket.bind(socket_address)
     server_socket.listen()
     server_socket.setblocking(False)
@@ -62,9 +62,7 @@ async def handle_client_data(client, loop, addr):
                     break
         except socket.error as err:
              print('ERROR:  %s'%(err))                   # Includes accidental disconnect of client 
-             break       
-    print('Connection closed',addr)                      # Includes no data recieved, parse error and keyboard interrupt as well
-    client.close() 
+             break 
 
 # This method can be used to send any data currently its sending just a string
 # TO DO - Add paramter in this method representing a data object which can be broadcasted
