@@ -17,6 +17,7 @@ Starting the gateway and the servers:
 RPi 21 : 
 
 `python3 gateway.py`
+
 `python3 server1.py`
 
 RPi 22: 
@@ -26,11 +27,15 @@ RPi 22:
 Staring the rovers: 
 
 RPi 21: 
+
 `python3 rover1-1.py`
+
 `python3 rover2-1.py`
 
 RPi 22: 
+
 `python3 rover1-2.py`
+
 `python3 rover2-2.py`
 
 
