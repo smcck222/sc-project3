@@ -31,13 +31,15 @@ def create_keys():
     with open('public_key.pem', 'wb') as f:
         f.write(pem)
     
-def read_keys(): 
+def read_public_key(): 
     with open("public_key.pem", "rb") as key_file:
         public_key = serialization.load_pem_public_key(
         key_file.read(),
         backend=default_backend()
         )
+    return public_key
 
+def read_private_key():
     with open("private_key.pem", "rb") as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
@@ -45,7 +47,7 @@ def read_keys():
             backend=default_backend()
         )
     
-    return public_key, private_key
+    return private_key
         
 def encrypt_data(msg, public_key): 
     # Encrypting.
@@ -77,10 +79,11 @@ def testing():
     msg = json.dumps(rover_info).encode('utf-8')
 
     create_keys()
-    public_key, private_key = read_keys()
+    public_key = read_public_key()
 
     encrypted_msg = encrypt_data(msg, public_key)
 
+    private_key = read_private_key()
     decrypted_msg = decrypt_data(encrypted_msg, private_key).decode('utf-8')
 
     print("ORIGINAL MESSAGE: ", msg)

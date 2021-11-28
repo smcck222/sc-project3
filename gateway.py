@@ -17,8 +17,9 @@ async def start_server(loop):
     hostname = socket.gethostname()
     ip = socket.gethostbyname(hostname)
     print('HOST IP: ',ip)
-    port = 9999
-    socket_address = ('10.35.70.21',33333)
+    #port = 9999
+    #socket_address = ('10.35.70.21',33333)
+    socket_address = ('127.0.0.1', 9999)
     server_socket.bind(socket_address)
     server_socket.listen()
     server_socket.setblocking(False)
@@ -47,9 +48,10 @@ async def handle_client_data(client, loop, addr):
     while True: 
         try:
             msg = await loop.sock_recv(client,4096)
-            data = msg.decode('utf-8')
-            data = json.loads(data)
-            print(data) # Receiving data from clients
+            #data = msg.decode('utf-8')
+            #data = json.loads(data)
+            #print(data) # Receiving data from clients
+            print(msg)
             if not msg:				                 
                 break
             else:

@@ -6,13 +6,15 @@ import json
 import random
 import math
 import threading
-
+import security
 
 clients_info_lock = threading.Lock()
 client_info = []              # List of slave rovers.
 rover_info = {}                 # ip: [x,y]
 WAIT_TIME_SECONDS = 10
-gateway_address = ('10.35.70.21',33333)
+#gateway_address = ('10.35.70.21',33333)
+gateway_address = ('127.0.0.1', 9999)
+
 gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 # Updates client_info list.
 def update_client_info(client):
@@ -57,6 +59,61 @@ def check_rover_temperature(temperature):
         return 0
     else:
         return 1
+async def send_mesg_at_timeout(timeout, func):
+    while True:
+        await asyncio.sleep(timeout)
+        await func()
+
+async def start_stream():
+    global gateway_socket
+    global rover_info
+    try:
+        if bool(rover_info):
+            #gateway_socket.sendall(json.dumps(rover_info).encode('utf-8'))  
+            public_key = security.read_public_key()
+            msg = json.dumps(rover_info).encode('utf-8')
+            encrypted_msg = security.encrypt_data(msg, public_key)
+            gateway_socket.sendall(encrypted_msg)  
+
+    except Exception as e:
+        print(e)
+        pass
+
+def connectToGateway(address):
+    global gateway_socket
+    socket_address = address
+    gateway_socket.connect(socket_address)
+    gateway_socket.setblocking(False)
+
+# This function is used for receiving the data from gateway and send it to all other rovers.
+async def receiveGatewayData(loop):
+    global client_info
+    global gateway_socket
+    while True:
+        try:
+            msg = await loop.sock_recv(gateway_socket,4096)
+            print('Data Received from Gateway')
+            #data = msg.decode('utf-8')
+            #data = json.loads(data)
+
+            private_key = security.read_private_key()
+            decrypted_msg = security.decrypt_data(msg, private_key).decode('utf-8')
+            print(json.loads(decrypted_msg))
+            
+            #if not msg:
+            #    break
+            #else:
+            #    if client_info:
+            #        for client in client_info:
+            #            task = {'type':'UpdateMessageFromNetwork1'}
+            #            task = json.dumps(task).encode('utf-8')
+            #            print('Sending data to rover ',client)
+            #    else:
+            #        break
+        except Exception as e:
+            print(e)
+            pass
+
 
 async def handle_client(address, loop):
     # Initial socket setup
@@ -117,57 +174,13 @@ async def handle_client_data(client, loop, addr):
     print('Connection closed',addr)                      # Includes no data recieved, parse error and keyboard interrupt as well
     client.close() 
 
-async def send_mesg_at_timeout(timeout, func):
-    while True:
-        await asyncio.sleep(timeout)
-        await func()
-
-async def start_stream():
-    global gateway_socket
-    global rover_info
-    try:
-        if bool(rover_info):
-            gateway_socket.sendall(json.dumps(rover_info).encode('utf-8'))  
-    except Exception as e:
-        print(e)
-        pass
-
-def connectToGateway(address):
-    global gateway_socket
-    socket_address = address
-    gateway_socket.connect(socket_address)
-    gateway_socket.setblocking(False)
-
-# This function is used for receiving the data from gateway and send it to all other rovers.
-async def receiveGatewayData(loop):
-    global client_info
-    global gateway_socket
-    while True:
-        try:
-            msg = await loop.sock_recv(gateway_socket,4096)
-            print('Data Received from Gateway')
-            data = msg.decode('utf-8')
-            data = json.loads(data)
-            print(data)
-            if not msg:
-                break
-            else:
-                if client_info:
-                    for client in client_info:
-                        task = {'type':'UpdateMessageFromNetwork1'}
-                        task = json.dumps(task).encode('utf-8')
-                        print('Sending data to rover ',client)
-                else:
-                    break
-        except Exception as e:
-            print(e)
-            pass
-
 
 if __name__ == '__main__':
     loop=asyncio.get_event_loop()
-    #loop.run_until_complete(handle_client(('127.0.0.1',8888),loop))
-    loop.run_until_complete(handle_client(('10.35.70.22',34000),loop)) 
+    
+    loop.run_until_complete(handle_client(('127.0.0.1',8880),loop))
+    #loop.run_until_complete(handle_client(('10.35.70.22',34000),loop)) 
+
     # ip and port no. RPI: 10.35.70.21, 10.35.70.22 , 33000
     loop.close()
 
