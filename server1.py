@@ -181,8 +181,8 @@ if __name__ == '__main__':
     
     loop=asyncio.get_event_loop()
     security.create_keys()
-    loop.run_until_complete(handle_client(('127.0.0.1',8888),loop))
-    #loop.run_until_complete(handle_client(('10.35.70.21',33000),loop)) 
+    #loop.run_until_complete(handle_client(('127.0.0.1',8888),loop))
+    loop.run_until_complete(handle_client(('10.35.70.21',33000),loop)) 
 
     #ip and port no. RPI: 10.35.70.21, 10.35.70.22 , 33000
     loop.close()
