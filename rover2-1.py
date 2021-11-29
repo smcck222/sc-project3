@@ -27,9 +27,6 @@ server_port = 8888         # localhost
 flag = True
 task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# server_ip = '10.35.70.21'     # rpi
-# server_port = 33000           # rpi
-
 
 def do_task(task):
     global location_x, location_y, status, temperature

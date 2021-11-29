@@ -29,7 +29,7 @@ def update_client_info(client):
 def update_rover_info(addr,data):
     global rover_info
     
-    rover_info[str(data['rover']) + '10.35.70.21'] = [data['location_x'], data['location_y'], addr[1]]  # rover_no:[x,y, portno]
+    rover_info[str(data['rover']) + '10.35.70.22'] = [data['location_x'], data['location_y'], addr[1]]  # rover_no:[x,y, portno]
     # Adds new + replaces old. 
 
 # Generates sleep task - for overheated rover.
@@ -98,7 +98,7 @@ async def receiveGatewayData(loop):
 
             private_key = security.read_private_key()
             decrypted_msg = security.decrypt_data(msg, private_key).decode('utf-8')
-            print(json.loads(decrypted_msg))
+            print("DATA FROM GATEWAY: ", json.loads(decrypted_msg))
             
             #if not msg:
             #    break
@@ -149,7 +149,7 @@ async def handle_client_data(client, loop, addr):
                 data = data.decode('utf-8')
                 data = json.loads(data)
                 update_rover_info(addr, data) # - is this useful because the port number keeps changing?
-                print(rover_info)
+                # print(rover_info)
                 print('Data recevied from ', addr)
                 print(data)
                 #print(addr[0] + str(addr[1]))

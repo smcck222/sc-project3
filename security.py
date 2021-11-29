@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 def create_keys():
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048,
+        key_size=4096,
         backend=default_backend()
     )
     
@@ -75,7 +75,7 @@ def decrypt_data(msg, private_key):
     return decoded_message
 
 def testing():
-    rover_info =  {"1'10.35.70.21'" :[300,300,5555], "2'10.35.70.21": [400,400,6666]}
+    rover_info =  {"1'10.35.70.21'" :[300,300,5555], "2'10.35.70.21": [400,400,6666], "3'10.35.70.21'" :[300,300,5555], "4'10.35.70.21": [400,400,6666]}
     msg = json.dumps(rover_info).encode('utf-8')
 
     create_keys()

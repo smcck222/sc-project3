@@ -20,7 +20,8 @@ location_x = random.uniform(0, 500)
 location_y = random.uniform(0, 500)
 
 #server_port = 34000
-#server_ip = '10.35.70.22'  
+#server_ip = '10.35.70.22'
+
 server_ip = '127.0.0.1'    # localhost
 server_port = 8880         # localhost
 
@@ -54,7 +55,7 @@ def do_task(task):
 
         location_x = target_x
         location_y = target_y
-        print("ROVER 1: Task Completed!")
+        print("ROVER 2: Task Completed!")
 
 
 def start():

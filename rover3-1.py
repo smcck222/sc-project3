@@ -19,13 +19,15 @@ temperature = 40
 location_x = random.uniform(0, 500)
 location_y = random.uniform(0, 500)
 
-#server_port = 34000  
-#server_ip = '10.35.70.22'
+#server_port = 33000  
+#server_ip = '10.35.70.21'  
 server_ip = '127.0.0.1'    # localhost
-server_port = 8880         # localhost
-
+server_port = 8888         # localhost
 flag = True
 task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# server_ip = '10.35.70.21'     # rpi
+# server_port = 33000           # rpi
 
 
 def do_task(task):
@@ -35,7 +37,7 @@ def do_task(task):
 
         target_x, target_y, temperature, status, task_require_time = s.do_rover_task(task, location_x, location_y,
                                                                                      temperature,status)
-        msg = "ROVER 2: Heading to Location (" + str(target_x) + ", " + str(target_y) + "), ETA: " + str(
+        msg = "ROVER 3: Heading to Location (" + str(target_x) + ", " + str(target_y) + "), ETA: " + str(
             task_require_time) + " seconds"
         print(msg)
 
@@ -51,7 +53,7 @@ def do_task(task):
 
         location_x = target_x
         location_y = target_y
-        print("ROVER 2: Task Completed!")
+        print("ROVER 3: Task Completed!")
 
 
 def start():
@@ -69,7 +71,7 @@ def start():
         elif status == 0:  # Rover is overheated and needs to be put to sleep.
             task_require_time = (
                         (temperature - 40) // s.decreasing_rate)  # Time to cool down = (diff in temp/cooling rate)/2
-            print("ROVER 2: Cooling down for: " + str(task_require_time) + "seconds")
+            print("ROVER 3: Cooling down for: " + str(task_require_time) + "seconds")
             sleep(task_require_time)
             temperature = 40  # reset temp.
             status = 1
@@ -80,7 +82,7 @@ def init():
     global s,task_socket
     # global location_x, location_y, temperature
     s = rover_sensors.rover_sensors()
-    health_report = {'rover': 2,
+    health_report = {'rover': 3,
                      'type': 'health_report',
                      'temperature': temperature,
                      'location_x': location_x,
@@ -93,13 +95,13 @@ def init():
             task_socket.connect((server_ip, server_port))  # Connecting to server/ leader rover.
 
         task_socket.send(json.dumps(health_report).encode('utf-8'))
-        print("ROVER 2: successfully sent health data")
+        print("ROVER 3: successfully sent health data")
         sleep(1)
         msg = task_socket.recv(1024)  # Waiting for task from server/leader rover.
         task = msg.decode('utf-8')
         task = json.loads(task)
         print(task)
-        print("ROVER 2: successfully recieved task")
+        print("ROVER 3: successfully recieved task")
         # task_socket.close()
         return task
 

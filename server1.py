@@ -99,7 +99,8 @@ async def receiveGatewayData(loop):
 
             private_key = security.read_private_key()
             decrypted_msg = security.decrypt_data(msg, private_key).decode('utf-8')
-            print(json.loads(decrypted_msg))
+            print("DATA FROM GATEWAY: ", json.loads(decrypted_msg))
+
 
             #if not msg:
             #    break
@@ -150,7 +151,7 @@ async def handle_client_data(client, loop, addr):
                 data = data.decode('utf-8')
                 data = json.loads(data)
                 update_rover_info(addr, data) # - is this useful because the port number keeps changing?
-                print(rover_info)
+                # print(rover_info)
                 print('Data recevied from ', addr)
                 print(data)
                 #print(addr[0] + str(addr[1]))
