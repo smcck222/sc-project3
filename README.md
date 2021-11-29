@@ -32,15 +32,31 @@ RPi 21:
 
 `python3 rover2-1.py`
 
+`python3 rover3-1.py`
+
+`python3 rover4-1.py`
+
 RPi 22: 
 
 `python3 rover1-2.py`
 
 `python3 rover2-2.py`
 
+`python3 rover3-2.py`
 
-To run the bash file: 
+`python3 rover4-2.py`
 
-`chmod +x exec.sh`
 
-`./exec.sh`
+Alternatively, run the bash files: 
+
+RPi 21: 
+
+`chmod +x exec1.sh`
+
+`./exec1.sh`
+
+RPi 22: 
+
+`chmod +x exec2.sh`
+
+`./exec2.sh`

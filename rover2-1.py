@@ -19,10 +19,10 @@ temperature = 40
 location_x = random.uniform(0, 500)
 location_y = random.uniform(0, 500)
 
-#server_port = 33000  
-#server_ip = '10.35.70.21'  
-server_ip = '127.0.0.1'    # localhost
-server_port = 8888         # localhost
+server_port = 33000  
+server_ip = '10.35.70.21'  
+#server_ip = '127.0.0.1'    # localhost
+#server_port = 8888         # localhost
 
 flag = True
 task_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

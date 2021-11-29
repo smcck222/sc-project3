@@ -12,8 +12,8 @@ clients_info_lock = threading.Lock()
 client_info = []              # List of slave rovers.
 rover_info = {}                 # ip: [x,y]
 WAIT_TIME_SECONDS = 10
-#gateway_address = ('10.35.70.21',33333)
-gateway_address = ('127.0.0.1', 9999)
+gateway_address = ('10.35.70.21',33333)
+#gateway_address = ('127.0.0.1', 9999)
 
 gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
