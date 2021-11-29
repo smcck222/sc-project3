@@ -14,7 +14,7 @@ import threading
 import rover_sensors
 
 
-status = 1  # Activate:1, Sleep:0, Leader:3
+status = 3  # Activate:1, Sleep:0, Leader:3
 temperature = 40
 location_x = random.uniform(0, 500)
 location_y = random.uniform(0, 500)
