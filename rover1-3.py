@@ -32,8 +32,8 @@ threads = []
 
 initial_time = time.time()
 # server_port = 3030          # localhost
-# server_ip = '10.35.70.21'        # localhost
-server_ip = '127.0.0.1'     # rpi
+server_ip = '10.35.70.21'        # localhost
+# server_ip = '127.0.0.1'     # rpi
 server_port = 33000           # rpi
 server_addr = (server_ip,server_port)
 #clients_info_lock = threading.Lock()
