@@ -41,7 +41,7 @@ if args.network_index is None:
 status = 3  #Activate:1, Sleep:0, Leader:3
 flag = 0
 temperature = 40
-rover_index = 1
+rover_index = args.rover_index
 
 location_x = random.uniform(0,500)
 location_y = random.uniform(0,500)
