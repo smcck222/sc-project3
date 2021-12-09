@@ -1,14 +1,10 @@
 # CLIENT SIMULATION/SENSOR SENDING DATA TO MONITOR.
 
 import asyncio
-from json import decoder
-import socket 
-import sys
+import socket
 import math
 from time import sleep
-import datetime
 import time
-import struct
 import random
 import json
 import threading
@@ -16,6 +12,31 @@ import rover_sensors
 import security
 from supporters import info_Manager as im
 from supporters import task_Generator as tg
+from config import network_config
+import argparse
+
+parser = argparse.ArgumentParser()
+# parser.add_argument('--ip', help='ip for the rover', type=str)
+parser.add_argument('--port', help='port for the rover', type=int)
+parser.add_argument('--network_index', help='network index', type=int)
+parser.add_argument('--rover_index', help='rover index', type=int)
+args = parser.parse_args()
+
+# if args.ip is None:
+#     print("Please specify the ip for the rover")
+#     exit(1)
+
+if args.port is None:
+    print("Please specify the port for the rover")
+    exit(1)
+
+if args.rover_index is None:
+    print("Please specify the rover index")
+    exit(1)
+
+if args.network_index is None:
+    print("Please specify the network index")
+    exit(1)
 
 status = 3  #Activate:1, Sleep:0, Leader:3
 flag = 0
@@ -30,18 +51,24 @@ taskGenerator = tg
 
 threads = []
 
+server_ip = ''
+if args.network_index == 1:
+    server_ip = network_config['server1_ip']
+elif args.network_index == 2:
+    server_ip = network_config['server2_ip']
 initial_time = time.time()
 # server_port = 33000          # localhost
-server_ip = '10.35.70.21'        # localhost
+# server_ip = args.ip        # localhost
+
 # server_ip = '127.0.0.1'     # rpi
-server_port = 33000           # rpi
+server_port = network_config['server_port']           # rpi
 server_addr = (server_ip,server_port)
 #clients_info_lock = threading.Lock()
-gateway_address = ('10.35.70.21',33333)
+gateway_address = (network_config['gateway_ip'], network_config['gateway_port'])
 gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-WAIT_TIME_SECONDS = 10
-gatewayClosed = False
-own_server_port = 33000
+WAIT_TIME_SECONDS = network_config['WAIT_TIME_SECONDS']
+gatewayClosed = network_config['gateway_closed']
+own_server_port = args.port
 
 # if the temperature of the rover is greater than 90, send "sleep" task.
 # else send "move+collect" task.
@@ -187,7 +214,7 @@ def start():
 
         elif status == 0:       # Rover is overheated and needs to be put to sleep.
             task_require_time = ((temperature-40)//decreasing_rate)    # Time to cool down = (diff in temp/cooling rate)/2
-            print("N" + str(rover_index) + " ROVER " + str(rover_index) + ": Coolinig down for: " + str(task_require_time ) + " seconds")
+            print("N" +str(args.network_index)+" ROVER " + str(rover_index) + ": Cooling down for: " + str(task_require_time ) + " seconds")
             sleep(task_require_time)
             temperature = 40  #reset temp.
             status = 1       
@@ -333,7 +360,7 @@ async def handle_client_data(client, loop, addr, sock,task1,task2):
             else: 
                 data = data.decode('utf-8')
                 data = json.loads(data)
-                print('Data recevied from ', addr)
+                print('Data receveid from ', addr)
                 print(data)
                 info_type = data['type']
                 if info_type == 'health_report':
