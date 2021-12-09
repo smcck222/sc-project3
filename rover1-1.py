@@ -31,16 +31,16 @@ taskGenerator = tg
 threads = []
 
 initial_time = time.time()
-server_port = 33000          # localhost
+# server_port = 33000          # localhost
 server_ip = '10.35.70.21'        # localhost
 # server_ip = '127.0.0.1'     # rpi
-# server_port = 33000           # rpi
+server_port = 33000           # rpi
 server_addr = (server_ip,server_port)
 #clients_info_lock = threading.Lock()
-#gateway_address = ('10.35.70.21',33333)
-#gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-#WAIT_TIME_SECONDS = 10
-#gatewayClosed = False
+gateway_address = ('10.35.70.21',33333)
+gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+WAIT_TIME_SECONDS = 10
+gatewayClosed = False
 own_server_port = 33000
 
 # if the temperature of the rover is greater than 90, send "sleep" task.
@@ -282,14 +282,14 @@ async def receiveGatewayData(loop):
                 print(decrypted_msg)
                 if not msg:
                     break
-                else:
-                    if client_info:
-                        for client in client_info:
-                            task = {'type':'UpdateMessageFromNetwork1'}
-                            # print(json.loads(decrypted_msg))
-                            # print('Sending data to rover')
-                    else:
-                        break
+                # else:
+                #     if client_info:
+                #         for client in client_info:
+                #             task = {'type':'UpdateMessageFromNetwork1'}
+                #             # print(json.loads(decrypted_msg))
+                #             # print('Sending data to rover')
+                #     else:
+                #         break
             except Exception as e:
                 print("Error occurred in receiveGateWay")
                 print(e)
@@ -304,24 +304,24 @@ async def handle_client(address, loop, sock):
     sock.listen(10)
     print('Server listening', address)
     sock.setblocking(False)                              # Setting to non blocking sockets
-    #connectToGateway(gateway_address)
-    #task1 = loop.create_task(send_mesg_at_timeout(WAIT_TIME_SECONDS, start_stream))
-    #task2 = loop.create_task(receiveGatewayData(loop))
+    connectToGateway(gateway_address)
+    task1 = loop.create_task(send_mesg_at_timeout(WAIT_TIME_SECONDS, start_stream))
+    task2 = loop.create_task(receiveGatewayData(loop))
     while status == 3:                                                                     
         try:
             client,addr = await loop.sock_accept(sock)   # Accepting connections from clients
             print('Connection from',addr)
             
             #loop.create_task(handle_client_data(client,loop,addr,task1,task2))
-            loop.create_task(handle_client_data(client, loop, addr, sock))
+            loop.create_task(handle_client_data(client, loop, addr, sock,task1,task2))
             
         except socket.error as err:
              print('ERROR:  %s'%(err))
 
-async def handle_client_data(client, loop, addr, sock):
+async def handle_client_data(client, loop, addr, sock,task1,task2):
 #async def handle_client_data(client, loop, addr,task1,task2):
     #global infoManager, temperature, flag, status, server_port,server_addr,server_ip,gatewayClosed,gateway_socket
-    global infoManager, taskGenerator, temperature, flag, status, server_port, server_addr, server_ip
+    global infoManager, taskGenerator, temperature, flag, status, server_port, server_addr, server_ip,gatewayClosed,gateway_socket
     server_temp_increasing_speed = 2
     while status == 3: 
         try:
@@ -350,14 +350,14 @@ async def handle_client_data(client, loop, addr, sock):
                         #else if server is overheating, send exchange and redirect task
                         else:
                             if flag == 0:
-                                #task1.cancel()
-                                #task2.cancel()
-                                #public_key = security.read_public_key()
-                                #msg = 'Closing'.encode('utf-8')
-                                #encrypted_msg = security.encrypt_data(msg, public_key)
-                                #gateway_socket.sendall(encrypted_msg)
-                                #gateway_socket.close()
-                                #gatewayClosed = True
+                                task1.cancel()
+                                task2.cancel()
+                                public_key = security.read_public_key()
+                                msg = 'Closing'.encode('utf-8')
+                                encrypted_msg = security.encrypt_data(msg, public_key)
+                                gateway_socket.sendall(encrypted_msg)
+                                gateway_socket.close()
+                                gatewayClosed = True
                                 server_port = infoManager.find_rover_port(data['rover'])
                                 server_addr = (server_ip,server_port)
                                 flag = 1
