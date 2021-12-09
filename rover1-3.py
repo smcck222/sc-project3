@@ -17,10 +17,10 @@ import security
 from supporters import info_Manager as im
 from supporters import task_Generator as tg
 
-status = 3  #Activate:1, Sleep:0, Leader:3
+status = 1  #Activate:1, Sleep:0, Leader:3
 flag = 0
 temperature = 40
-rover_index = 1
+rover_index = 3
 
 location_x = random.uniform(0,500)
 location_y = random.uniform(0,500)
@@ -41,7 +41,7 @@ server_addr = (server_ip,server_port)
 #gateway_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #WAIT_TIME_SECONDS = 10
 #gatewayClosed = False
-own_server_port = 33000
+own_server_port = 33001
 
 # if the temperature of the rover is greater than 90, send "sleep" task.
 # else send "move+collect" task.
