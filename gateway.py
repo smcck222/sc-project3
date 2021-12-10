@@ -22,13 +22,10 @@ async def start_server(loop):
     print('HOST IP: ', ip)
     port = 9999
     socket_address = (network_config['gateway_ip'],network_config['gateway_port'])
-    # socket_address = ('10.35.70.21', 33333)
     server_socket.bind(socket_address)
     server_socket.listen()
     server_socket.setblocking(False)
     print('Listening at ', socket_address)
-    # Uncomment following line of code if you want to send certain event/messages after time interval.
-    # task = loop.create_task(send_mesg_at_timeout(WAIT_TIME_SECONDS, start_stream))
     while True:
         client_socket, addr = await loop.sock_accept(server_socket)
         print('Client connected', addr)
@@ -79,22 +76,6 @@ async def handle_client_data(client, loop, addr):
                 with clients_lock:
                     print('Updating the rover leader list')
                     clients.remove(client)
-
-
-# This method can be used to send any data currently its sending just a string
-# TO DO - Add paramter in this method representing a data object which can be broadcasted
-async def start_stream():
-    global numbers
-    global clients
-    # print("accepted connection from client",addr)
-    try:
-        if clients:
-            for client in clients:
-                data = "Hi client"
-                client.sendall(data.encode('utf-8'))
-    except Exception as e:
-        print(e)
-        pass
 
 
 if __name__ == '__main__':

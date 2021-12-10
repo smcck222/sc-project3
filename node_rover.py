@@ -57,9 +57,6 @@ if args.network_index == 1:
 elif args.network_index == 2:
     server_ip = network_config['server2_ip']
 initial_time = time.time()
-# server_port = 33000          # localhost
-# server_ip = args.ip      # localhost
-# server_ip = '127.0.0.1'     # rpi
 server_port = network_config['server_port']           # rpi
 server_addr = (server_ip,server_port)
 #clients_info_lock = threading.Lock()
@@ -145,7 +142,6 @@ def do_task(task):
         status = 3
         temp_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 	# Socket creation. 
         temp_socket.connect((server_ip,server_port))  					# Connecting to server/ leader rover.
-        # print("server_addr",server_addr)
         task = {'type':'test'}
         temp_socket.send(json.dumps(task).encode('utf-8'))
         temp_socket.close()
@@ -265,8 +261,6 @@ async def start_stream():
     rover_info = infoManager.get_rover_info()
     try:
         if bool(rover_info) and status == 3:
-            #gateway_socket.sendall(json.dumps(rover_info).encode('utf-8')) 
-            
             public_key = security.read_public_key()
             msg = json.dumps(rover_info).encode('utf-8')
             encrypted_msg = security.encrypt_data(msg, public_key)
@@ -299,33 +293,18 @@ async def receiveGatewayData(loop):
         while True:
             try:
                 msg = await loop.sock_recv(gateway_socket,4096)
-                #data = msg.decode('utf-8')
-                #data = json.loads(data)
-                #print(data)
                 private_key = security.read_private_key()
                 decrypted_msg = security.decrypt_data(msg, private_key).decode('utf-8')
                 print('====================Data Received from Gateway====================')
                 print(decrypted_msg)
                 if not msg:
                     break
-                else:
-                    if client_info:
-                        for client in client_info:
-                            task = {'type':'UpdateMessageFromNetwork1'}
-                            # print(json.loads(decrypted_msg))
-                            # print('Sending data to rover')
-                    else:
-                        break
             except Exception as e:
                 print("Error occurred in receiveGateWay")
                 print(e)
                 pass    
 
 async def handle_client(address, loop, sock):
-    # Initial socket setup
-    #sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    #print("Server Address: ",address)
-    
     sock.bind(address) 
     sock.listen(10)
     print('Server listening', address)
@@ -337,23 +316,18 @@ async def handle_client(address, loop, sock):
         try:
             client,addr = await loop.sock_accept(sock)   # Accepting connections from clients
             print('Connection from',addr)
-            
-            #loop.create_task(handle_client_data(client,loop,addr,task1,task2))
             loop.create_task(handle_client_data(client, loop, addr, sock,task1,task2))
             
         except socket.error as err:
              print('ERROR:  %s'%(err))
 
 async def handle_client_data(client, loop, addr, sock,task1,task2):
-#async def handle_client_data(client, loop, addr,task1,task2):
-    #global infoManager, temperature, flag, status, server_port,server_addr,server_ip,gatewayClosed,gateway_socket
     global infoManager, taskGenerator, temperature, flag, status, server_port, server_addr, server_ip,gatewayClosed,gateway_socket
     server_temp_increasing_speed = 2
     while status == 3: 
         try:
             msg = await loop.sock_recv(client,4096)      # Receiving data from clients
             data = msg
-            
             if not data:				                 # If no data message is recieved
                 break
             else: 
@@ -405,7 +379,6 @@ async def handle_client_data(client, loop, addr, sock,task1,task2):
         
     print('Connection closed',addr)                      # Includes no data recieved, parse error and keyboard interrupt as well
     client.close()
-
 
 if __name__ == '__main__':
     start()
