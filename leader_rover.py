@@ -118,7 +118,7 @@ def do_task(task):
         dist_y = target_y - location_y
         total_dist = math.sqrt(math.pow(dist_x,2) + math.pow(dist_y,2))
         task_require_time = total_dist/rover_speed
-        msg = "N" + str(rover_index) + " ROVER " + str(rover_index) + ": Heading to Location (" + str(target_x) + ", " + str(target_y) + "), ETA: " + str(task_require_time) + " seconds"
+        msg = "N" + str(args.network_index) + " ROVER " + str(rover_index) + ": Heading to Location (" + str(target_x) + ", " + str(target_y) + "), ETA: " + str(task_require_time) + " seconds"
         print(msg)
         
         # Increasing temp of rover as it moves, include after sensor data if that counts in task_require_time.
@@ -139,7 +139,7 @@ def do_task(task):
         
         location_x = target_x
         location_y = target_y
-        print("N" + str(rover_index) + " ROVER "+ str(rover_index) +": Task Completed!")
+        print("N" + str(args.network_index) + " ROVER "+ str(rover_index) +": Task Completed!")
         
     elif task['type'] == 'exchange':
         status = 3
@@ -241,13 +241,13 @@ def init():
         print('Socket Creation successful')
         task_socket.connect(server_addr)  					# Connecting to server/ leader rover.
         task_socket.send(json.dumps(health_report).encode('utf-8'))
-        print("N" + str(rover_index) + " ROVER " + str(rover_index) + ": successfully sent health data")
+        print("N" + str(args.network_index) + " ROVER " + str(rover_index) + ": successfully sent health data")
         sleep(1)
         msg=task_socket.recv(1024)     # Waiting for task from server/leader rover.
         task = msg.decode('utf-8')
         task = json.loads(task)
         print(task)
-        print("N" + str(rover_index) + " ROVER "+ str(rover_index) +": successfully recieved task")
+        print("N" + str(args.network_index) + " ROVER "+ str(rover_index) +": successfully recieved task")
         task_socket.close()
         return task
 

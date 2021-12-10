@@ -36,8 +36,8 @@ class rover_sensors:
         return target_x,target_y,temperature,status,task_require_time
 
     def air_temp_sensor(self):
-        #mars air temperature range 150K-300K
-        return random.randint(150,300)
+        #mars air temperature range 220K-300K
+        return random.randint(220,300)
 
     def pressure_sensor(self):
         # mars air temperature range 600pa-750pa
@@ -48,15 +48,14 @@ class rover_sensors:
         return random.uniform(10.0,20.0)
 
     def wind_sensor(self):
-        #wind speed miles per hour
-        return random.uniform(10.0,70.0)
+        #wind speed km per hour
+        return random.uniform(2.0,10.0)
 
     def radiation_dust_sensor(self):
-        #dummy values for now
         return random.uniform(10.0,20.0)
 
     def humidity_sensor(self):
-        return random.uniform(200.0,300.0)
+        return random.uniform(80.0,100.0)
 
     def rover_temp(self):
         return self.temp + 5
