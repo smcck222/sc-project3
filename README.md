@@ -39,5 +39,5 @@ chmod +x network2.sh
 - Start the Rover Network 2 - 
 
 ```
-./network2.sh`
+./network2.sh
 ```
