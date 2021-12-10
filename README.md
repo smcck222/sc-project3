@@ -4,9 +4,9 @@ Communicating between the RPis with socket programming and asynchronous sockets 
 
 RPi 21 - rasp-021.berry.scss.tcd.ie 10.35.70.21 - We will be runnning Gateway Node and Rover Network 1
 
-RPi 22 - rasp-022.berry.scss.tcd.ie 10.35.70.22 - We will be Rover Network 2
+RPi 22 - rasp-022.berry.scss.tcd.ie 10.35.70.22 - We will be running Rover Network 2
 
-Clone the git repo in both RPis. 
+Clone the git on RPis. 
 
 Run the following commands on RPi 21 in the following order :
 
