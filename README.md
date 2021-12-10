@@ -10,13 +10,13 @@ Clone the git repo in both RPis.
 
 Run the following commands on RPi 21 in the following order :
 <ol>
-  <li>Start the Gateway Node - <b>python3 gateway.py</b></li>
-  <li>Give Permission to Shell script- <b>chmod +x network1.sh</b></li>
-  <li>Start the Rover Network 1 - <b>./network1.sh </b></li>
+  <li>Start the Gateway Node - <b> `python3 gateway.py` </b></li>
+  <li>Give Permission to Shell script- <b> `chmod +x network1.sh` </b></li>
+  <li>Start the Rover Network 1 - <b> `./network1.sh` </b></li>
 </ol>
 
 Similarly, run following commands on RPi 22 in the following order :
 <ol>
-  <li>Give Permission to Shell script- <b>chmod +x network2.sh</b></li>
-  <li>Start the Rover Network 2 - <b>./network2.sh </b></li>
+  <li>Give Permission to Shell script- <b> `chmod +x network2.sh` </b></li>
+  <li>Start the Rover Network 2 - <b> `./network2.sh` </b></li>
 </ol>
